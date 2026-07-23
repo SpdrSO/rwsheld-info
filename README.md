@@ -47,7 +47,7 @@
 * Ferrite Core, Lithium, Sodium - оптимизация производительности клиента
 * Fabric API, Fabric Language Kotlin, Placeholder API, YetAnotherConfigLib - зависимости для вышеперечисленных модов
 ### Установка модов
-Моды можно скопировать из приложенного ниже архива в папку модов вашей сборки или вручную можно с сайтов [Modrinth](https://modrinth.com/discover/mods) и [CurseForge](https://www.curseforge.com/minecraft). Там же можно скачать ресурспаки, шейдеры и т.д. В Prism Launcher всё это можно сделать сразу через интерфейс программы.
+Моды можно скопировать из приложенного архива в папку модов вашей сборки или вручную можно с сайтов [Modrinth](https://modrinth.com/discover/mods) и [CurseForge](https://www.curseforge.com/minecraft). Там же можно скачать ресурспаки, шейдеры и т.д. В Prism Launcher всё это можно сделать сразу через интерфейс программы.
 ## Подключение к серверу
 К серверу можно подключиться по одному из двух доменов:
 * `rwsheld.joinserver.xyz` - прямое подключение с минимальным пингом
