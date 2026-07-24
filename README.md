@@ -28,7 +28,10 @@
 > ```sh
 > echo '{"accounts": [{"entitlement": {"canPlayMinecraft": true,"ownsMinecraft": true},"type": "MSA"}],"formatVersion": 3}' > ~/.var/app/org.prismlauncher.PrismLauncher/data/PrismLauncher/accounts.json
 > ```
-> Для macOS, вероятно, подойдёт команда для Linux, но с заменой пути установки на темошний.
+> Для macOS:
+> ```sh
+> echo '{"accounts": [{"entitlement": {"canPlayMinecraft": true,"ownsMinecraft": true},"type": "MSA"}],"formatVersion": 3}' > ~/Library/Application\ Support/PrismLauncher/accounts.json
+> ```
 
 ## Версия и моды
 Сервер работает на ядре **Fabric** и версии Minecraft **26.2**. Далее будет предоставлен список модов для игры.
