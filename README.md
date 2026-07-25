@@ -52,6 +52,8 @@
 * **Chunky** - инструмент для генерации чанков
 * **Immersive Paintings** - мод для добавления кастомных картин (серверная часть)
 * **Invisible Frames** - возможность сделать рамку невидимой через Shift+ПКМ
+* **Player Corpses** - удобно лутаемые трупы игроков
+* **RW Sheld Mod** - [кастомный мод](https://github.com/SpdrSO/rwsheld-mod) для нашего сервера
 * **Skin Restorer** - подтягивает скины по нику с серверов Mojang и [Ely.by](https://ely.by/)
 * **Simple Voice Chat** - голосовой чат (серверная часть)
 * **Clumps**, **Ferrite Core**, **Lithium** - оптимизация производительности сервера
@@ -80,7 +82,7 @@
 * **Fabric API**, **Fabric Language Kotlin**, **Placeholder API**, **YetAnotherConfigLib** - зависимости для вышеперечисленных модов
 
 ### Установка модов
-Моды можно скопировать из архива `rwsheld-mods.zip` в [разделе релизов](https://github.com/SpdrSO/rwsheld-info/releases) в папку модов вашей сборки или вручную можно с сайтов [Modrinth](https://modrinth.com/discover/mods) и [CurseForge](https://www.curseforge.com/minecraft). Там же можно скачать ресурспаки, шейдеры и т.д. В Prism Launcher всё это можно сделать сразу через интерфейс программы.
+Моды можно скопировать из архива `rwsheld-mods.zip` в [разделе релизов](https://github.com/SpdrSO/rwsheld-info/releases) в папку модов вашей сборки или вручную с сайтов [Modrinth](https://modrinth.com/discover/mods) и [CurseForge](https://www.curseforge.com/minecraft) (кастомный мод [вот тут](https://github.com/SpdrSO/rwsheld-mod/releases)). Там же можно скачать ресурспаки, шейдеры и т.д. В Prism Launcher всё это можно сделать сразу через интерфейс программы.
 
 ## Подключение к серверу
 К серверу можно подключиться по одному из двух доменов:
