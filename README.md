@@ -82,7 +82,7 @@
 * **Fabric API**, **Fabric Language Kotlin**, **Placeholder API**, **YetAnotherConfigLib** - зависимости для вышеперечисленных модов
 
 ### Установка модов
-Моды можно скопировать из архива `rwsheld-mods.zip` в [разделе релизов](https://github.com/SpdrSO/rwsheld-info/releases) в папку модов вашей сборки или вручную с сайтов [Modrinth](https://modrinth.com/discover/mods) и [CurseForge](https://www.curseforge.com/minecraft) (кастомный мод [вот тут](https://github.com/SpdrSO/rwsheld-mod/releases)). Там же можно скачать ресурспаки, шейдеры и т.д. В Prism Launcher всё это можно сделать сразу через интерфейс программы.
+Моды можно скопировать из архива `rwsheld-mods.zip` в [разделе релизов](https://github.com/SpdrSO/rwsheld-info/releases) в папку модов вашей сборки или вручную с сайтов [Modrinth](https://modrinth.com/discover/mods) и [CurseForge](https://www.curseforge.com/minecraft) (кастомный мод [вот тут](https://github.com/SpdrSO/rwsheld-mod/releases)). Там же доступны ресурспаки, шейдеры и т.д. В Prism Launcher всё это можно сделать сразу через интерфейс программы.
 
 ## Подключение к серверу
 К серверу можно подключиться по одному из двух доменов:
