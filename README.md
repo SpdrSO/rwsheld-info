@@ -62,11 +62,12 @@
 * **Invisible Frames** - возможность сделать рамку невидимой через Shift+ПКМ
 * **Ledger** - логирование всех событий на сервере
 * **RW Sheld Mod** - [кастомный мод](https://github.com/SpdrSO/rwsheld-mod) для нашего сервера
+* **Set World Spawn Point** - конкретная точка респавна
 * **Skin Restorer** - подтягивает скины по нику с серверов Mojang и [Ely.by](https://ely.by/)
 * **Spark** - анализ нагрузки на сервер
 * **Simple Voice Chat** - голосовой чат (серверная часть)
 * **Clumps**, **Ferrite Core**, **Krypton**, **Lithium**, **ModernFix** - оптимизация производительности сервера
-* **Fabric API**, **Fabric Language Kotlin**, **Fzzy Config** - зависимости для вышеперечисленных модов
+* **Collective**, **Fabric API**, **Fabric Language Kotlin**, **Fzzy Config** - зависимости для вышеперечисленных модов
 
 #### Дата-паки
 * **Minecart Improvements** - официальный датапак для улучшения вагонеток (у нас максимум их скорости поднят в 4 раза)
