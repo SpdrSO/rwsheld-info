@@ -63,7 +63,7 @@
 * **Ledger** - логирование всех событий на сервере
 * **RW Sheld Mod** - [кастомный мод](https://github.com/SpdrSO/rwsheld-mod) для нашего сервера
 * **Set World Spawn Point** - конкретная точка респавна
-* **Skin Restorer** - подтягивает скины по нику с серверов Mojang и [Ely.by](https://ely.by/)
+* **Skin Restorer** - подтягивает скины по нику с серверов Mojang и по команде `/skin` с [Ely.by](https://ely.by/)
 * **Spark** - анализ нагрузки на сервер
 * **Simple Voice Chat** - голосовой чат (серверная часть)
 * **Clumps**, **Ferrite Core**, **Krypton**, **Lithium**, **ModernFix** - оптимизация производительности сервера
