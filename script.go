@@ -31,9 +31,22 @@ func newMod(name, source, version, description string) (*Mod, error) {
 		Description: description,
 	}
 
-	resp, err := http.Get("https://api.modrinth.com/v2/project/" + name)
+	switch mod.Source {
+	case "modrinth":
+		if err := mod.initFromModrinth(); err != nil {
+			return nil, fmt.Errorf("Инициализация с Modrinth: %w", err)
+		}
+	default:
+		return nil, fmt.Errorf("Неизвестный источник модов: %q", source)
+	}
+
+	return mod, nil
+}
+
+func (m *Mod) initFromModrinth() error {
+	resp, err := http.Get("https://api.modrinth.com/v2/project/" + m.Name)
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer resp.Body.Close()
 
@@ -42,16 +55,16 @@ func newMod(name, source, version, description string) (*Mod, error) {
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&modrinthProject); err != nil {
-		return nil, err
+		return err
 	}
 
-	resp, err = http.Get("https://api.modrinth.com/v2/project/" + name + "/version")
+	resp, err = http.Get("https://api.modrinth.com/v2/project/" + m.Name + "/version")
 	if err != nil {
-		return nil, err
+		return err
 	}
 	defer resp.Body.Close()
 
-	mod.PrettyName = modrinthProject.Title
+	m.PrettyName = modrinthProject.Title
 
 	var modrinthVersions []struct {
 		Version string `json:"version_number"`
@@ -62,25 +75,32 @@ func newMod(name, source, version, description string) (*Mod, error) {
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&modrinthVersions); err != nil {
-		return nil, err
+		return err
 	}
 
-	target := version + "+26.2"
+	target := m.Version + "+26.2"
+	found := false
 
 	for _, v := range modrinthVersions {
 		if v.Version != target {
 			continue
 		}
 
+		found = true
+
 		for _, f := range v.Files {
 			if f.Primary {
-				mod.DownloadLink = f.URL
+				m.DownloadLink = f.URL
 				break
 			}
 		}
 	}
 
-	return mod, nil
+	if !found {
+		return fmt.Errorf("Версия %q для мода %q не найдена", target, m.Name)
+	}
+
+	return nil
 }
 
 // FUNCS
