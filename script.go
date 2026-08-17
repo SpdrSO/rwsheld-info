@@ -50,11 +50,11 @@ func (m *Mod) initFromModrinth() error {
 	}
 	defer resp.Body.Close()
 
-	var modrinthProject struct {
+	var project struct {
 		Title string `json:"title"`
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(&modrinthProject); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&project); err != nil {
 		return err
 	}
 
@@ -64,9 +64,9 @@ func (m *Mod) initFromModrinth() error {
 	}
 	defer resp.Body.Close()
 
-	m.PrettyName = modrinthProject.Title
+	m.PrettyName = project.Title
 
-	var modrinthVersions []struct {
+	var versions []struct {
 		Version string `json:"version_number"`
 		Files   []struct {
 			URL     string `json:"url"`
@@ -74,14 +74,14 @@ func (m *Mod) initFromModrinth() error {
 		} `json:"files"`
 	}
 
-	if err := json.NewDecoder(resp.Body).Decode(&modrinthVersions); err != nil {
+	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
 		return err
 	}
 
 	target := m.Version + "+26.2"
 	found := false
 
-	for _, v := range modrinthVersions {
+	for _, v := range versions {
 		if v.Version != target {
 			continue
 		}
