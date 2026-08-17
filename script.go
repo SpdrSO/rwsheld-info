@@ -69,7 +69,8 @@ func (m *Mod) initFromModrinth() error {
 	m.PrettyName = project.Title
 
 	var versions []struct {
-		Version string `json:"version_number"`
+		Version string   `json:"version_number"`
+		Loaders []string `json:"loaders"`
 		Files   []struct {
 			URL     string `json:"url"`
 			Primary bool   `json:"primary"`
@@ -82,16 +83,27 @@ func (m *Mod) initFromModrinth() error {
 
 	target := m.Version + "+" + GAME_VERSION
 	found := false
-	for _, v := range versions {
-		if v.Version != target {
+	for _, version := range versions {
+		if version.Version != target {
+			continue
+		}
+
+		loaderSupported := false
+		for _, loader := range version.Loaders {
+			if loader == MOD_LOADER {
+				loaderSupported = true
+				break
+			}
+		}
+		if !loaderSupported {
 			continue
 		}
 
 		found = true
 
-		for _, f := range v.Files {
-			if f.Primary {
-				m.DownloadLink = f.URL
+		for _, file := range version.Files {
+			if file.Primary {
+				m.DownloadLink = file.URL
 				break
 			}
 		}
