@@ -9,7 +9,9 @@ import (
 // CONSTS
 
 const (
-	BUILD_DIR string = "build"
+	BUILD_DIR    = "build"
+	GAME_VERSION = "26.2"
+	MOD_LOADER   = "fabric"
 )
 
 // TYPES
@@ -78,9 +80,8 @@ func (m *Mod) initFromModrinth() error {
 		return err
 	}
 
-	target := m.Version + "+26.2"
+	target := m.Version + "+" + GAME_VERSION
 	found := false
-
 	for _, v := range versions {
 		if v.Version != target {
 			continue
