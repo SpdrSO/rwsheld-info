@@ -6,7 +6,11 @@ import (
 	"net/http"
 )
 
-// CONSTS
+//
+//
+//   CONSTS
+//
+//
 
 const (
 	BUILD_DIR    = "build"
@@ -14,18 +18,23 @@ const (
 	MOD_LOADER   = "fabric"
 )
 
-// TYPES
+//
+//
+//   TYPES
+//
+//
 
 type Mod struct {
 	Name         string
 	Source       string
 	Version      string
+	ModType      string
 	Description  string
 	PrettyName   string
 	DownloadLink string
 }
 
-func newMod(name, source, version, description string) (*Mod, error) {
+func newMod(name, source, version, modType, description string) (*Mod, error) {
 	mod := &Mod{
 		Name:        name,
 		Source:      source,
@@ -116,10 +125,14 @@ func (m *Mod) initFromModrinth() error {
 	return nil
 }
 
-// FUNCS
+//
+//
+//   FUNCS
+//
+//
 
 func main() {
-	mod, err := newMod("fabric-api", "modrinth", "0.155.2", "Эт Фабрик ЭйПиАй")
+	mod, err := newMod("fabric-api", "modrinth", "0.155.2", "general", "Эт Фабрик ЭйПиАй")
 	if err != nil {
 		fmt.Println(err)
 		return
