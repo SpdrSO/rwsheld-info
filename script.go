@@ -60,38 +60,15 @@ func newMod(name, source, version, modType, description string) (*Mod, error) {
 }
 
 func (m *Mod) initFromModrinth() error {
-	resp, err := http.Get("https://api.modrinth.com/v2/project/" + m.Name)
+	project, err := getModrinthProject(m.Name)
 	if err != nil {
 		return err
 	}
-	defer resp.Body.Close()
-
-	var project struct {
-		Title string `json:"title"`
-	}
-
-	if err := json.NewDecoder(resp.Body).Decode(&project); err != nil {
-		return err
-	}
-
-	resp, err = http.Get("https://api.modrinth.com/v2/project/" + m.Name + "/version")
-	if err != nil {
-		return err
-	}
-	defer resp.Body.Close()
 
 	m.PrettyName = project.Title
 
-	var versions []struct {
-		Version string   `json:"version_number"`
-		Loaders []string `json:"loaders"`
-		Files   []struct {
-			URL     string `json:"url"`
-			Primary bool   `json:"primary"`
-		} `json:"files"`
-	}
-
-	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
+	versions, err := getModrinthVersions(m.Name)
+	if err != nil {
 		return err
 	}
 
@@ -128,6 +105,57 @@ func (m *Mod) initFromModrinth() error {
 	}
 
 	return nil
+}
+
+//
+//
+//   GET
+//
+//
+
+type ModrinthProject struct {
+	Title string `json:"title"`
+}
+
+func getModrinthProject(name string) (*ModrinthProject, error) {
+	resp, err := http.Get("https://api.modrinth.com/v2/project/" + name)
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var project ModrinthProject
+
+	if err := json.NewDecoder(resp.Body).Decode(&project); err != nil {
+		return nil, err
+	}
+
+	return &project, nil
+}
+
+type ModrinthVersions struct {
+	Version string   `json:"version_number"`
+	Loaders []string `json:"loaders"`
+	Files   []struct {
+		URL     string `json:"url"`
+		Primary bool   `json:"primary"`
+	} `json:"files"`
+}
+
+func getModrinthVersions(name string) ([]ModrinthVersions, error) {
+	resp, err := http.Get("https://api.modrinth.com/v2/project/" + name + "/version")
+	if err != nil {
+		return nil, err
+	}
+	defer resp.Body.Close()
+
+	var versions []ModrinthVersions
+
+	if err := json.NewDecoder(resp.Body).Decode(&versions); err != nil {
+		return nil, err
+	}
+
+	return versions, nil
 }
 
 //
