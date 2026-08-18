@@ -39,6 +39,7 @@ func newMod(name, source, version, modType, description string) (*Mod, error) {
 		Name:        name,
 		Source:      source,
 		Version:     version,
+		ModType:     modType,
 		Description: description,
 	}
 
@@ -48,7 +49,11 @@ func newMod(name, source, version, modType, description string) (*Mod, error) {
 			return nil, fmt.Errorf("Инициализация с Modrinth: %w", err)
 		}
 	default:
-		return nil, fmt.Errorf("Неизвестный источник модов: %q", source)
+		return nil, fmt.Errorf("Неизвестный источник мода: %q", mod.Source)
+	}
+
+	if mod.ModType != "general" && mod.ModType != "optimization" && mod.ModType != "dependency" {
+		return nil, fmt.Errorf("Неизвестный тип мода: %q", mod.ModType)
 	}
 
 	return mod, nil
