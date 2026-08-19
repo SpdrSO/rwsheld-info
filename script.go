@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 
 	"golang.org/x/sync/errgroup"
 )
@@ -36,50 +37,42 @@ type Mod struct {
 	Description  string `toml:"description"`
 }
 
-func newMod(name, source, version, modType, description string) (*Mod, error) {
-	mod := &Mod{
-		Name:        name,
-		Source:      source,
-		Version:     version,
-		ModType:     modType,
-		Description: description,
+func (m *Mod) initMissingFields() error {
+	if m.Name == "" {
+		return fmt.Errorf("Для мода не указано обязательное поле \"name\"")
 	}
 
-	if mod.Name == "" {
-		return nil, fmt.Errorf("Для мода не указано обязательное поле \"name\"")
-	}
-
-	if mod.ModType != "general" && mod.ModType != "optimization" && mod.ModType != "dependency" {
-		return nil, fmt.Errorf("Неизвестный тип мода: %q", mod.ModType)
+	if m.ModType != "general" && m.ModType != "optimization" && m.ModType != "dependency" {
+		return fmt.Errorf("Неизвестный тип мода: %q", m.ModType)
 	}
 
 	var g errgroup.Group
 
-	if mod.PrettyName == "" {
+	if m.PrettyName == "" {
 		g.Go(func() error {
-			if err := mod.initPrettyName(); err != nil {
-				mod.PrettyName = mod.Name
+			if err := m.initPrettyName(); err != nil {
+				m.PrettyName = m.Name
 			}
 
 			return nil
 		})
 	}
 
-	if mod.DownloadLink == "" {
-		if mod.Source == "" || mod.Version == "" {
-			return nil, fmt.Errorf("У мода %q отсутствует поле \"download_link\" или поля \"source\" + \"version\"", mod.Name)
+	if m.DownloadLink == "" {
+		if m.Source == "" || m.Version == "" {
+			return fmt.Errorf("У мода %q отсутствует поле \"download_link\" или поля \"source\" + \"version\"", m.Name)
 		}
 
 		g.Go(func() error {
-			return mod.initDownloadLink()
+			return m.initDownloadLink()
 		})
 	}
 
 	if err := g.Wait(); err != nil {
-		return nil, err
+		return err
 	}
 
-	return mod, nil
+	return nil
 }
 
 func (m *Mod) initPrettyName() error {
@@ -206,16 +199,23 @@ func getModrinthVersions(name string) ([]ModrinthVersions, error) {
 //
 
 func main() {
-	mod, err := newMod("fabric-api", "modrinth", "0.155.2", "general", "Эт Фабрик ЭйПиАй")
-	if err != nil {
-		fmt.Println(err)
-		return
+	mod := Mod{
+		Name:        "fabric-api",
+		Source:      "modrinth",
+		Version:     "0.155.2",
+		ModType:     "general",
+		Description: "Эт Фабрик ЭйПиАй",
 	}
 
-	fmt.Println("Name:", mod.Name)
-	fmt.Println("Source:", mod.Source)
-	fmt.Println("Version:", mod.Version)
-	fmt.Println("Description:", mod.Description)
-	fmt.Println("PrettyName:", mod.PrettyName)
-	fmt.Println("DownloadLink:", mod.DownloadLink)
+	if err := mod.initMissingFields(); err != nil {
+		fmt.Fprintf(os.Stderr, "Ошибка при инициализации мода %q: %v", mod.Name, err)
+	} else {
+		fmt.Println("Name:", mod.Name)
+		fmt.Println("PrettyName:", mod.PrettyName)
+		fmt.Println("Source:", mod.Source)
+		fmt.Println("Version:", mod.Version)
+		fmt.Println("DownloadLink:", mod.DownloadLink)
+		fmt.Println("ModType:", mod.ModType)
+		fmt.Println("Description:", mod.Description)
+	}
 }
