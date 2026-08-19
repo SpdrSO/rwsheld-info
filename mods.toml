@@ -4,113 +4,113 @@ loader = "fabric"
 
 # СЕРВЕРНЫЕ МОДЫ
 
-[[mods.required]]
+[[list.server]]
 name = "2032-world-height"
 source = "modrinth"
-version = "1.3"
+version = "1.3+mod"
 type = "general"
 description = "увеличивает максимальную высоту строительства до 2032 блоков"
 
-[[mods.required]]
+[[list.server]]
 name = "appleskin"
 source = "modrinth"
-version = "3.0.10"
+version = "3.0.10+mc26.2"
 type = "general"
 description = "улучшение интерфейса здоровья и голода (серверная часть)"
 
-[[mods.required]]
+[[list.server]]
 name = "auth"
 source = "modrinth"
-version = "1.6.2"
+version = "v1.6.2+mod"
 type = "general"
 description = "авторизация по паролю"
 
-[[mods.required]]
-name = "chunky-fabric"
+[[list.server]]
+name = "chunky"
 source = "modrinth"
 version = "1.5.3"
 type = "general"
 description = "инструмент для генерации чанков"
 
-[[mods.required]]
+[[list.server]]
 name = "distanthorizons"
 source = "modrinth"
-version = "3.2.0"
+version = "3.2.0-b-26.2"
 type = "general"
 description = "далёкая прорисовка чанков с оптимизациями (серверная часть)"
 
-[[mods.required]]
-name = "immersive_paintings"
+[[list.server]]
+name = "immersive-paintings"
 source = "modrinth"
-version = "0.7.8"
+version = "0.7.8+26.2"
 type = "general"
 description = "мод для добавления кастомных картин (серверная часть)"
 
-[[mods.required]]
-name = "invisibleframes"
+[[list.server]]
+name = "invisible-frames-mod"
 source = "modrinth"
-version = "2.0.1"
+version = "2.0.1+26.2-fabric"
 type = "general"
 description = "возможность сделать рамку невидимой через Shift+ПКМ"
 
-[[mods.required]]
+[[list.server]]
 name = "jei"
 source = "modrinth"
 version = "30.16.0.124"
 type = "general"
 description = "браузер рецептов (клиентская часть)"
 
-[[mods.required]]
+[[list.server]]
 name = "ledger"
 source = "modrinth"
 version = "1.3.23"
 type = "general"
 description = "логирование всех событий на сервере"
 
-[[mods.required]]
+[[list.server]]
 name = "rwsheld-mod"
-source = "modrinth"
-version = "1.4.0"
+pretty_name = "RW Sheld Mod"
+download_link = "https://github.com/SpdrSO/rwsheld-mod/releases/download/v1.4.0/rwsheld-mod-1.4.0+26.2.jar"
 type = "general"
 description = "кастомный мод для нашего сервера"
 
-[[mods.required]]
-name = "setworldspawnpoint"
+[[list.server]]
+name = "set-world-spawn-point"
 source = "modrinth"
-version = "3.8"
+version = "26.2.0-3.8-fabric+forge+neo"
 type = "general"
 description = "конкретная точка респавна"
 
-[[mods.required]]
+[[list.server]]
 name = "shulkerboxtooltip"
 source = "modrinth"
-version = "5.4.0"
+version = "5.4.0+26.2-fabric"
 type = "general"
 description = "предпросмотр предметов в шалкере (серверная часть)"
 
-[[mods.required]]
-name = "skinsrestorer"
+[[list.server]]
+name = "skinrestorer"
 source = "modrinth"
-version = "2.9.0"
+version = "2.10.0+26.1-fabric"
 type = "general"
 description = "подтягивает скины по нику с серверов Mojang и по команде `/skin` с Ely.by"
 
-[[mods.required]]
+[[list.server]]
 name = "spark"
 source = "modrinth"
-version = "1.10.175"
+version = "1.10.173-fabric"
 type = "general"
 description = "анализ нагрузки на сервер"
 
-[[mods.required]]
+[[list.server]]
 name = "simple-voice-chat"
 source = "modrinth"
-version = "2.6.21"
+version = "fabric-2.6.22+26.2"
 type = "general"
 description = "голосовой чат (серверная часть)"
 
-[[mods.required]]
-name = "worldedit-mod"
+[[list.server]]
+name = "worldedit"
 source = "modrinth"
 version = "7.4.4"
 type = "general"
@@ -118,91 +118,91 @@ description = "инструмент для редактирования мира
 
 # ОПТИМИЗАЦИЯ СЕРВЕРА
 
-[[mods.required]]
-name = "clumps-fabric"
+[[list.server]]
+name = "clumps"
 source = "modrinth"
 version = "26.2.1"
 type = "optimization"
 
-[[mods.required]]
-name = "ferritecore"
+[[list.server]]
+name = "ferrite-core"
 source = "modrinth"
-version = "9.0.0"
+version = "9.0.0-fabric"
 type = "optimization"
 
-[[mods.required]]
+[[list.server]]
 name = "krypton"
 source = "modrinth"
 version = "0.3.1"
 type = "optimization"
 
-[[mods.required]]
+[[list.server]]
 name = "lithium"
 source = "modrinth"
-version = "0.25.2"
+version = "mc26.2-0.25.3-fabric"
 type = "optimization"
 
-[[mods.required]]
-name = "modernfix"
+[[list.server]]
+name = "modernfix-mvus"
 source = "modrinth"
-version = "5.27.19"
+version = "5.27.19-build.1"
 type = "optimization"
 
 # ЗАВИСИМОСТИ СЕРВЕРНЫХ МОДОВ
 
-[[mods.required]]
+[[list.server]]
 name = "collective"
 source = "modrinth"
-version = "8.39"
+version = "26.2.0-8.39-fabric+forge+neo"
 type = "dependency"
 
-[[mods.required]]
+[[list.server]]
 name = "fabric-api"
 source = "modrinth"
-version = "0.155.2"
+version = "0.158.0+26.2"
 type = "dependency"
 
-[[mods.required]]
+[[list.server]]
 name = "fabric-language-kotlin"
 source = "modrinth"
-version = "1.13.13"
+version = "1.13.13+kotlin.2.4.10"
 type = "dependency"
 
-[[mods.required]]
+[[list.server]]
 name = "fzzy-config"
 source = "modrinth"
-version = "0.7.6"
+version = "0.7.6+26.2"
 type = "dependency"
 
 # ОБЯЗАТЕЛЬНЫЕ МОДЫ
 
-[[mods.required]]
+[[list.required]]
 name = "immersive-paintings"
 source = "modrinth"
-version = "0.7.8"
+version = "0.7.8+26.2"
 type = "general"
 description = "мод для добавления кастомных картин (клиентская часть)"
 
-[[mods.required]]
+[[list.required]]
 name = "simple-voice-chat"
 source = "modrinth"
-version = "2.6.21"
+version = "fabric-2.6.22+26.2"
 type = "general"
 description = "голосовой чат (клиентская часть)"
 
-[[mods.required]]
+[[list.required]]
 name = "fabric-api"
 source = "modrinth"
-version = "0.155.2"
+version = "0.158.0+26.2"
 type = "dependency"
 
-[[mods.required]]
-name = "fabric-language-kotlin"
+[[list.required]]
+name = "fabric-api"
 source = "modrinth"
-version = "1.13.13"
+version = "1.13.13+kotlin.2.4.10"
 type = "dependency"
 
-[[mods.required]]
+[[list.required]]
 name = "fzzy-config"
 source = "modrinth"
 version = "0.7.6"
@@ -210,70 +210,70 @@ type = "dependency"
 
 # РЕКОМЕНДУЕМЫЕ МОДЫ
 
-[[mods.required]]
+[[list.recommended]]
 name = "appleskin"
 source = "modrinth"
 version = "3.0.10"
 type = "general"
 description = "улучшение интерфейса здоровья и голода (клиентская часть)"
 
-[[mods.required]]
+[[list.recommended]]
 name = "chat_heads"
 source = "modrinth"
 version = "1.2.5"
 type = "general"
 description = "отображение аватарок игроков в чате"
 
-[[mods.required]]
+[[list.recommended]]
 name = "continuity"
 source = "modrinth"
 version = "3.0.1"
 type = "general"
 description = "соединённые текстуры стекла и некоторых других строительных блоков (требуется активировать встроенный ресурспаки)"
 
-[[mods.required]]
+[[list.recommended]]
 name = "jei"
 source = "modrinth"
 version = "30.16.0.124"
 type = "general"
 description = "браузер рецептов (клиентская часть)"
 
-[[mods.required]]
+[[list.recommended]]
 name = "lambdynamiclights"
 source = "modrinth"
 version = "4.12.2"
 type = "general"
 description = "доработка освещения"
 
-[[mods.required]]
+[[list.recommended]]
 name = "modmenu"
 source = "modrinth"
 version = "20.0.1"
 type = "general"
 description = "меню настройки модов"
 
-[[mods.required]]
+[[list.recommended]]
 name = "shulkerboxtooltip"
 source = "modrinth"
-version = "5.4.0"
+version = "5.4.0+26.2-fabric"
 type = "general"
 description = "предпросмотр предметов в шалкере (клиентская часть)"
 
-[[mods.required]]
+[[list.recommended]]
 name = "xaerominimap"
 source = "modrinth"
 version = "26.4.2"
 type = "general"
 description = "миникарта и маркеры места смерти"
 
-[[mods.required]]
+[[list.recommended]]
 name = "xaeroworldmap"
 source = "modrinth"
 version = "1.44.2"
 type = "general"
 description = "полноэкранная карта мира"
 
-[[mods.required]]
+[[list.recommended]]
 name = "zoomify"
 source = "modrinth"
 version = "2.16.1"
@@ -282,19 +282,19 @@ description = "зум на клавишу C"
 
 # ОПТИМИЗАЦИЯ КЛИЕНТА
 
-[[mods.required]]
+[[list.recommended]]
 name = "ferritecore"
 source = "modrinth"
 version = "9.0.0"
 type = "optimization"
 
-[[mods.required]]
+[[list.recommended]]
 name = "lithium"
 source = "modrinth"
 version = "0.25.2"
 type = "optimization"
 
-[[mods.required]]
+[[list.recommended]]
 name = "sodium"
 source = "modrinth"
 version = "0.9.1"
@@ -302,25 +302,25 @@ type = "optimization"
 
 # ЗАВИСИМОСТИ РЕКОМЕНДУЕМЫХ МОДОВ
 
-[[mods.required]]
+[[list.recommended]]
 name = "fabric-api"
 source = "modrinth"
-version = "0.155.2"
+version = "0.158.0+26.2"
 type = "dependency"
 
-[[mods.required]]
-name = "fabric-language-kotlin"
+[[list.recommended]]
+name = "fabric-api"
 source = "modrinth"
-version = "1.13.13"
+version = "1.13.13+kotlin.2.4.10"
 type = "dependency"
 
-[[mods.required]]
+[[list.recommended]]
 name = "placeholder-api"
 source = "modrinth"
 version = "УКАЖИТЕ_ВЕРСИЮ"
 type = "dependency"
 
-[[mods.required]]
+[[list.recommended]]
 name = "yet_another_config_lib_v3"
 source = "modrinth"
 version = "3.8.2+1.21.11-fabric"
@@ -328,27 +328,27 @@ type = "dependency"
 
 # ОПЦИОНАЛЬНЫЕ МОДЫ
 
-[[mods.required]]
+[[list.optional]]
 name = "distanthorizons"
 source = "modrinth"
-version = "3.2.0"
+version = "3.2.0-b-26.2"
 type = "general"
 description = "далёкая прорисовка чанков с оптимизациями (клиентская часть)"
 
-[[mods.required]]
+[[list.optional]]
 name = "iris"
 source = "modrinth"
 version = "1.11.2"
 type = "general"
 description = "поддержка шейдеров"
 
-[[mods.required]]
+[[list.optional]]
 name = "fabric-api"
 source = "modrinth"
-version = "0.155.2"
+version = "0.158.0+26.2"
 type = "dependency"
 
-[[mods.required]]
+[[list.optional]]
 name = "sodium"
 source = "modrinth"
 version = "0.9.1"

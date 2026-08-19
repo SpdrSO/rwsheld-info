@@ -5,7 +5,9 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"slices"
 
+	"github.com/BurntSushi/toml"
 	"golang.org/x/sync/errgroup"
 )
 
@@ -17,6 +19,7 @@ import (
 
 const (
 	BUILD_DIR    = "build"
+	CONFIG_PATH  = "mods.toml"
 	GAME_VERSION = "26.2"
 	MOD_LOADER   = "fabric"
 )
@@ -26,6 +29,29 @@ const (
 //   TYPES
 //
 //
+
+type Config struct {
+	Meta struct {
+		Version string `toml:"version"`
+		Loader  string `toml:"loader"`
+	} `toml:"meta"`
+	List struct {
+		Server      []Mod `toml:"server"`
+		Required    []Mod `toml:"required"`
+		Recommended []Mod `toml:"recommended"`
+		Optional    []Mod `toml:"optional"`
+	} `toml:"list"`
+}
+
+func loadConfig() (*Config, error) {
+	var config Config
+
+	if _, err := toml.DecodeFile(CONFIG_PATH, &config); err != nil {
+		return nil, fmt.Errorf("Ошибка при декодировании файла: %w", err)
+	}
+
+	return &config, nil
+}
 
 type Mod struct {
 	Name         string `toml:"name"`
@@ -72,6 +98,8 @@ func (m *Mod) initMissingFields() error {
 		return err
 	}
 
+	fmt.Printf("Информация о моде %q получена\n", m.Name)
+
 	return nil
 }
 
@@ -101,39 +129,25 @@ func (m *Mod) initDownloadLink() error {
 			return err
 		}
 
-		target := m.Version + "+" + GAME_VERSION
 		found := false
-		for _, version := range versions {
-			if version.Version != target {
-				continue
-			}
-
-			loaderSupported := false
-			for _, loader := range version.Loaders {
-				if loader == MOD_LOADER {
-					loaderSupported = true
-					break
+		for _, v := range versions {
+			if v.Version == m.Version && slices.Contains(v.GameVersions, GAME_VERSION) && slices.Contains(v.Loaders, MOD_LOADER) {
+				found = true
+				for _, f := range v.Files {
+					if f.Primary {
+						m.DownloadLink = f.URL
+						break
+					}
 				}
-			}
-			if !loaderSupported {
-				continue
-			}
-
-			found = true
-
-			for _, file := range version.Files {
-				if file.Primary {
-					m.DownloadLink = file.URL
-					break
-				}
+				break
 			}
 		}
 
 		if !found {
-			return fmt.Errorf("Версия %q для мода %q не найдена", target, m.Name)
+			return fmt.Errorf("Версия %q для мода %q не найдена", m.Version, m.Name)
 		}
-
 		return nil
+
 	case "curseforge":
 		return fmt.Errorf("Источник CurseForge пока что не поддерживается")
 	default:
@@ -168,9 +182,10 @@ func getModrinthProject(name string) (*ModrinthProject, error) {
 }
 
 type ModrinthVersions struct {
-	Version string   `json:"version_number"`
-	Loaders []string `json:"loaders"`
-	Files   []struct {
+	Version      string   `json:"version_number"`
+	GameVersions []string `json:"game_versions"`
+	Loaders      []string `json:"loaders"`
+	Files        []struct {
 		URL     string `json:"url"`
 		Primary bool   `json:"primary"`
 	} `json:"files"`
@@ -199,17 +214,25 @@ func getModrinthVersions(name string) ([]ModrinthVersions, error) {
 //
 
 func main() {
-	mod := Mod{
-		Name:        "fabric-api",
-		Source:      "modrinth",
-		Version:     "0.155.2",
-		ModType:     "general",
-		Description: "Эт Фабрик ЭйПиАй",
+	fmt.Println("ЗАГРУЗКА КОНФИГА...")
+	config, err := loadConfig()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Ошибка при загрузке конфига: %v\n", err)
+		os.Exit(1)
 	}
+	fmt.Println("КОНФИГ ЗАГРУЖЕН")
 
-	if err := mod.initMissingFields(); err != nil {
-		fmt.Fprintf(os.Stderr, "Ошибка при инициализации мода %q: %v", mod.Name, err)
-	} else {
+	fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ О МОДАХ...")
+	for i := range config.List.Server {
+		mod := &config.List.Server[i]
+		if err := mod.initMissingFields(); err != nil {
+			fmt.Fprintf(os.Stderr, "Ошибка при получении информации о моде: %v\n", err)
+			os.Exit(1)
+		}
+	}
+	fmt.Println("ИНФОРМАЦИЯ О МОДАХ ПОЛУЧЕНА")
+
+	for _, mod := range config.List.Server {
 		fmt.Println("Name:", mod.Name)
 		fmt.Println("PrettyName:", mod.PrettyName)
 		fmt.Println("Source:", mod.Source)
@@ -217,5 +240,6 @@ func main() {
 		fmt.Println("DownloadLink:", mod.DownloadLink)
 		fmt.Println("ModType:", mod.ModType)
 		fmt.Println("Description:", mod.Description)
+		fmt.Println()
 	}
 }
