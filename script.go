@@ -4,6 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+
+	"golang.org/x/sync/errgroup"
 )
 
 //
@@ -47,21 +49,34 @@ func newMod(name, source, version, modType, description string) (*Mod, error) {
 		return nil, fmt.Errorf("Для мода не указано обязательное поле \"name\"")
 	}
 
+	if mod.ModType != "general" && mod.ModType != "optimization" && mod.ModType != "dependency" {
+		return nil, fmt.Errorf("Неизвестный тип мода: %q", mod.ModType)
+	}
+
+	var g errgroup.Group
+
 	if mod.PrettyName == "" {
-		if err := mod.initPrettyName(); err != nil {
-			mod.PrettyName = mod.Name
-		}
+		g.Go(func() error {
+			if err := mod.initPrettyName(); err != nil {
+				mod.PrettyName = mod.Name
+			}
+
+			return nil
+		})
 	}
 
 	if mod.DownloadLink == "" {
 		if mod.Source == "" || mod.Version == "" {
 			return nil, fmt.Errorf("У мода %q отсутствует поле \"download_link\" или поля \"source\" + \"version\"", mod.Name)
 		}
-		mod.initDownloadLink()
+
+		g.Go(func() error {
+			return mod.initDownloadLink()
+		})
 	}
 
-	if mod.ModType != "general" && mod.ModType != "optimization" && mod.ModType != "dependency" {
-		return nil, fmt.Errorf("Неизвестный тип мода: %q", mod.ModType)
+	if err := g.Wait(); err != nil {
+		return nil, err
 	}
 
 	return mod, nil
