@@ -43,13 +43,21 @@ func newMod(name, source, version, modType, description string) (*Mod, error) {
 		Description: description,
 	}
 
-	switch mod.Source {
-	case "modrinth":
-		if err := mod.initFromModrinth(); err != nil {
-			return nil, fmt.Errorf("Инициализация с Modrinth: %w", err)
+	if mod.Name == "" {
+		return nil, fmt.Errorf("Для мода не указано обязательное поле \"name\"")
+	}
+
+	if mod.PrettyName == "" {
+		if err := mod.initPrettyName(); err != nil {
+			mod.PrettyName = mod.Name
 		}
-	default:
-		return nil, fmt.Errorf("Неизвестный источник мода: %q", mod.Source)
+	}
+
+	if mod.DownloadLink == "" {
+		if mod.Source == "" || mod.Version == "" {
+			return nil, fmt.Errorf("У мода %q отсутствует поле \"download_link\" или поля \"source\" + \"version\"", mod.Name)
+		}
+		mod.initDownloadLink()
 	}
 
 	if mod.ModType != "general" && mod.ModType != "optimization" && mod.ModType != "dependency" {
@@ -59,52 +67,70 @@ func newMod(name, source, version, modType, description string) (*Mod, error) {
 	return mod, nil
 }
 
-func (m *Mod) initFromModrinth() error {
-	project, err := getModrinthProject(m.Name)
-	if err != nil {
-		return err
-	}
-
-	m.PrettyName = project.Title
-
-	versions, err := getModrinthVersions(m.Name)
-	if err != nil {
-		return err
-	}
-
-	target := m.Version + "+" + GAME_VERSION
-	found := false
-	for _, version := range versions {
-		if version.Version != target {
-			continue
+func (m *Mod) initPrettyName() error {
+	switch m.Source {
+	case "modrinth":
+		project, err := getModrinthProject(m.Name)
+		if err != nil {
+			return err
 		}
 
-		loaderSupported := false
-		for _, loader := range version.Loaders {
-			if loader == MOD_LOADER {
-				loaderSupported = true
-				break
+		m.PrettyName = project.Title
+
+		return nil
+	case "curseforge":
+		return fmt.Errorf("Источник CurseForge пока что не поддерживается")
+	default:
+		return fmt.Errorf("Неизвестный источник: %q", m.Source)
+	}
+}
+
+func (m *Mod) initDownloadLink() error {
+	switch m.Source {
+	case "modrinth":
+		versions, err := getModrinthVersions(m.Name)
+		if err != nil {
+			return err
+		}
+
+		target := m.Version + "+" + GAME_VERSION
+		found := false
+		for _, version := range versions {
+			if version.Version != target {
+				continue
+			}
+
+			loaderSupported := false
+			for _, loader := range version.Loaders {
+				if loader == MOD_LOADER {
+					loaderSupported = true
+					break
+				}
+			}
+			if !loaderSupported {
+				continue
+			}
+
+			found = true
+
+			for _, file := range version.Files {
+				if file.Primary {
+					m.DownloadLink = file.URL
+					break
+				}
 			}
 		}
-		if !loaderSupported {
-			continue
+
+		if !found {
+			return fmt.Errorf("Версия %q для мода %q не найдена", target, m.Name)
 		}
 
-		found = true
-
-		for _, file := range version.Files {
-			if file.Primary {
-				m.DownloadLink = file.URL
-				break
-			}
-		}
+		return nil
+	case "curseforge":
+		return fmt.Errorf("Источник CurseForge пока что не поддерживается")
+	default:
+		return fmt.Errorf("Неизвестный источник: %q", m.Source)
 	}
-
-	if !found {
-		return fmt.Errorf("Версия %q для мода %q не найдена", target, m.Name)
-	}
-
-	return nil
 }
 
 //
