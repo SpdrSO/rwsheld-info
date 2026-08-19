@@ -27,13 +27,13 @@ const (
 //
 
 type Mod struct {
-	Name         string
-	Source       string
-	Version      string
-	ModType      string
-	Description  string
-	PrettyName   string
-	DownloadLink string
+	Name         string `toml:"name"`
+	PrettyName   string `toml:"pretty_name"`
+	Source       string `toml:"source"`
+	Version      string `toml:"version"`
+	DownloadLink string `toml:"download_link"`
+	ModType      string `toml:"type"`
+	Description  string `toml:"description"`
 }
 
 func newMod(name, source, version, modType, description string) (*Mod, error) {
