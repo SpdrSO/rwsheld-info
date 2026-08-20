@@ -222,17 +222,47 @@ func main() {
 	}
 	fmt.Println("КОНФИГ ЗАГРУЖЕН")
 
-	fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ О МОДАХ...")
-	for i := range config.List.Server {
-		mod := &config.List.Server[i]
-		if err := mod.initMissingFields(); err != nil {
-			fmt.Fprintf(os.Stderr, "Ошибка при получении информации о моде: %v\n", err)
-			os.Exit(1)
-		}
-	}
-	fmt.Println("ИНФОРМАЦИЯ О МОДАХ ПОЛУЧЕНА")
+	// fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ О СЕРВЕРНЫХ МОДАХ...")
+	// for i := range config.List.Server {
+	// 	mod := &config.List.Server[i]
+	// 	if err := mod.initMissingFields(); err != nil {
+	// 		fmt.Fprintf(os.Stderr, "Ошибка при получении информации о моде: %v\n", err)
+	// 		os.Exit(1)
+	// 	}
+	// }
+	// fmt.Println("ИНФОРМАЦИЯ О СЕРВЕРНЫХ МОДАХ ПОЛУЧЕНА")
 
-	for _, mod := range config.List.Server {
+	// fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ ОБ ОБЯЗАТЕЛЬНЫХ МОДАХ...")
+	// for i := range config.List.Required {
+	// 	mod := &config.List.Required[i]
+	// 	if err := mod.initMissingFields(); err != nil {
+	// 		fmt.Fprintf(os.Stderr, "Ошибка при получении информации о моде: %v\n", err)
+	// 		os.Exit(1)
+	// 	}
+	// }
+	// fmt.Println("ИНФОРМАЦИЯ ОБ ОБЯЗАТЕЛЬНЫХ МОДАХ ПОЛУЧЕНА")
+
+	// fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ О РЕКОМЕНДУЕМЫХ МОДАХ...")
+	// for i := range config.List.Recommended {
+	// 	mod := &config.List.Recommended[i]
+	// 	if err := mod.initMissingFields(); err != nil {
+	// 		fmt.Fprintf(os.Stderr, "Ошибка при получении информации о моде %q: %v\n", mod.Name, err)
+	// 		os.Exit(1)
+	// 	}
+	// }
+	// fmt.Println("ИНФОРМАЦИЯ О РЕКОМЕНДУЕМЫХ МОДАХ ПОЛУЧЕНА")
+
+	// fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ ОБ ОПЦИОНАЛЬНЫХ МОДАХ...")
+	// for i := range config.List.Optional {
+	// 	mod := &config.List.Optional[i]
+	// 	if err := mod.initMissingFields(); err != nil {
+	// 		fmt.Fprintf(os.Stderr, "Ошибка при получении информации о моде: %v\n", err)
+	// 		os.Exit(1)
+	// 	}
+	// }
+	// fmt.Println("ИНФОРМАЦИЯ ОБ ОПЦИОНАЛЬНЫХ МОДАХ ПОЛУЧЕНА")
+
+	for _, mod := range config.List.Recommended {
 		fmt.Println("Name:", mod.Name)
 		fmt.Println("PrettyName:", mod.PrettyName)
 		fmt.Println("Source:", mod.Source)

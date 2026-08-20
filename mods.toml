@@ -197,7 +197,7 @@ version = "0.158.0+26.2"
 type = "dependency"
 
 [[list.required]]
-name = "fabric-api"
+name = "fabric-language-kotlin"
 source = "modrinth"
 version = "1.13.13+kotlin.2.4.10"
 type = "dependency"
@@ -205,7 +205,7 @@ type = "dependency"
 [[list.required]]
 name = "fzzy-config"
 source = "modrinth"
-version = "0.7.6"
+version = "0.7.6+26.2"
 type = "dependency"
 
 # РЕКОМЕНДУЕМЫЕ МОДЫ
@@ -213,12 +213,12 @@ type = "dependency"
 [[list.recommended]]
 name = "appleskin"
 source = "modrinth"
-version = "3.0.10"
+version = "3.0.10+mc26.2"
 type = "general"
 description = "улучшение интерфейса здоровья и голода (клиентская часть)"
 
 [[list.recommended]]
-name = "chat_heads"
+name = "chat-heads"
 source = "modrinth"
 version = "1.2.5"
 type = "general"
@@ -227,7 +227,7 @@ description = "отображение аватарок игроков в чат�
 [[list.recommended]]
 name = "continuity"
 source = "modrinth"
-version = "3.0.1"
+version = "3.0.1+26.2"
 type = "general"
 description = "соединённые текстуры стекла и некоторых других строительных блоков (требуется активировать встроенный ресурспаки)"
 
@@ -241,7 +241,7 @@ description = "браузер рецептов (клиентская часть)
 [[list.recommended]]
 name = "lambdynamiclights"
 source = "modrinth"
-version = "4.12.2"
+version = "4.12.2+26.2"
 type = "general"
 description = "доработка освещения"
 
@@ -260,44 +260,44 @@ type = "general"
 description = "предпросмотр предметов в шалкере (клиентская часть)"
 
 [[list.recommended]]
-name = "xaerominimap"
+name = "xaeros-minimap"
 source = "modrinth"
-version = "26.4.2"
+version = "fabric-26.2-26.4.2"
 type = "general"
 description = "миникарта и маркеры места смерти"
 
 [[list.recommended]]
-name = "xaeroworldmap"
+name = "xaeros-world-map"
 source = "modrinth"
-version = "1.44.2"
+version = "fabric-26.2-1.44.2"
 type = "general"
 description = "полноэкранная карта мира"
 
 [[list.recommended]]
 name = "zoomify"
 source = "modrinth"
-version = "2.16.1"
+version = "2.16.1+26.2"
 type = "general"
 description = "зум на клавишу C"
 
 # ОПТИМИЗАЦИЯ КЛИЕНТА
 
 [[list.recommended]]
-name = "ferritecore"
+name = "ferrite-core"
 source = "modrinth"
-version = "9.0.0"
+version = "9.0.0-fabric"
 type = "optimization"
 
 [[list.recommended]]
 name = "lithium"
 source = "modrinth"
-version = "0.25.2"
+version = "mc26.2-0.25.3-fabric"
 type = "optimization"
 
 [[list.recommended]]
 name = "sodium"
 source = "modrinth"
-version = "0.9.1"
+version = "mc26.2-0.9.1-fabric"
 type = "optimization"
 
 # ЗАВИСИМОСТИ РЕКОМЕНДУЕМЫХ МОДОВ
@@ -309,7 +309,7 @@ version = "0.158.0+26.2"
 type = "dependency"
 
 [[list.recommended]]
-name = "fabric-api"
+name = "fabric-language-kotlin"
 source = "modrinth"
 version = "1.13.13+kotlin.2.4.10"
 type = "dependency"
@@ -317,13 +317,13 @@ type = "dependency"
 [[list.recommended]]
 name = "placeholder-api"
 source = "modrinth"
-version = "УКАЖИТЕ_ВЕРСИЮ"
+version = "3.1.0-beta.1+26.2"
 type = "dependency"
 
 [[list.recommended]]
-name = "yet_another_config_lib_v3"
+name = "yacl"
 source = "modrinth"
-version = "3.8.2+1.21.11-fabric"
+version = "3.9.6+26.2-fabric"
 type = "dependency"
 
 # ОПЦИОНАЛЬНЫЕ МОДЫ
@@ -338,7 +338,7 @@ description = "далёкая прорисовка чанков с оптими�
 [[list.optional]]
 name = "iris"
 source = "modrinth"
-version = "1.11.2"
+version = "1.11.2+26.2-fabric"
 type = "general"
 description = "поддержка шейдеров"
 
@@ -351,5 +351,5 @@ type = "dependency"
 [[list.optional]]
 name = "sodium"
 source = "modrinth"
-version = "0.9.1"
+version = "mc26.2-0.9.1-fabric"
 type = "dependency"
