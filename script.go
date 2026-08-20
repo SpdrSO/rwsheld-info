@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"os"
 	"slices"
+	"sync"
 
 	"github.com/BurntSushi/toml"
 	"golang.org/x/sync/errgroup"
@@ -18,10 +19,14 @@ import (
 //
 
 const (
-	BUILD_DIR    = "build"
-	CONFIG_PATH  = "mods.toml"
-	GAME_VERSION = "26.2"
-	MOD_LOADER   = "fabric"
+	BUILD_DIR   = "build"
+	TEMP_DIR    = "build/temp"
+	CONFIG_PATH = "mods.toml"
+)
+
+var (
+	config   *Config
+	configMu sync.RWMutex
 )
 
 //
@@ -122,6 +127,11 @@ func (m *Mod) initPrettyName() error {
 }
 
 func (m *Mod) initDownloadLink() error {
+	configMu.RLock()
+	gameVersion := config.Meta.Version
+	modLoader := config.Meta.Loader
+	configMu.RUnlock()
+
 	switch m.Source {
 	case "modrinth":
 		versions, err := getModrinthVersions(m.Name)
@@ -131,7 +141,7 @@ func (m *Mod) initDownloadLink() error {
 
 		found := false
 		for _, v := range versions {
-			if v.Version == m.Version && slices.Contains(v.GameVersions, GAME_VERSION) && slices.Contains(v.Loaders, MOD_LOADER) {
+			if v.Version == m.Version && slices.Contains(v.GameVersions, gameVersion) && slices.Contains(v.Loaders, modLoader) {
 				found = true
 				for _, f := range v.Files {
 					if f.Primary {
@@ -214,62 +224,49 @@ func getModrinthVersions(name string) ([]ModrinthVersions, error) {
 //
 
 func main() {
-	fmt.Println("ЗАГРУЗКА КОНФИГА...")
-	config, err := loadConfig()
+	cfg, err := loadConfig()
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Ошибка при загрузке конфига: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Ошибка загрузки конфига: %v\n", err)
 		os.Exit(1)
 	}
-	fmt.Println("КОНФИГ ЗАГРУЖЕН")
 
-	// fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ О СЕРВЕРНЫХ МОДАХ...")
-	// for i := range config.List.Server {
-	// 	mod := &config.List.Server[i]
-	// 	if err := mod.initMissingFields(); err != nil {
-	// 		fmt.Fprintf(os.Stderr, "Ошибка при получении информации о моде: %v\n", err)
-	// 		os.Exit(1)
-	// 	}
-	// }
-	// fmt.Println("ИНФОРМАЦИЯ О СЕРВЕРНЫХ МОДАХ ПОЛУЧЕНА")
+	configMu.Lock()
+	config = cfg
+	configMu.Unlock()
 
-	// fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ ОБ ОБЯЗАТЕЛЬНЫХ МОДАХ...")
-	// for i := range config.List.Required {
-	// 	mod := &config.List.Required[i]
-	// 	if err := mod.initMissingFields(); err != nil {
-	// 		fmt.Fprintf(os.Stderr, "Ошибка при получении информации о моде: %v\n", err)
-	// 		os.Exit(1)
-	// 	}
-	// }
-	// fmt.Println("ИНФОРМАЦИЯ ОБ ОБЯЗАТЕЛЬНЫХ МОДАХ ПОЛУЧЕНА")
-
-	// fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ О РЕКОМЕНДУЕМЫХ МОДАХ...")
-	// for i := range config.List.Recommended {
-	// 	mod := &config.List.Recommended[i]
-	// 	if err := mod.initMissingFields(); err != nil {
-	// 		fmt.Fprintf(os.Stderr, "Ошибка при получении информации о моде %q: %v\n", mod.Name, err)
-	// 		os.Exit(1)
-	// 	}
-	// }
-	// fmt.Println("ИНФОРМАЦИЯ О РЕКОМЕНДУЕМЫХ МОДАХ ПОЛУЧЕНА")
-
-	// fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ ОБ ОПЦИОНАЛЬНЫХ МОДАХ...")
-	// for i := range config.List.Optional {
-	// 	mod := &config.List.Optional[i]
-	// 	if err := mod.initMissingFields(); err != nil {
-	// 		fmt.Fprintf(os.Stderr, "Ошибка при получении информации о моде: %v\n", err)
-	// 		os.Exit(1)
-	// 	}
-	// }
-	// fmt.Println("ИНФОРМАЦИЯ ОБ ОПЦИОНАЛЬНЫХ МОДАХ ПОЛУЧЕНА")
-
-	for _, mod := range config.List.Recommended {
-		fmt.Println("Name:", mod.Name)
-		fmt.Println("PrettyName:", mod.PrettyName)
-		fmt.Println("Source:", mod.Source)
-		fmt.Println("Version:", mod.Version)
-		fmt.Println("DownloadLink:", mod.DownloadLink)
-		fmt.Println("ModType:", mod.ModType)
-		fmt.Println("Description:", mod.Description)
-		fmt.Println()
+	fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ О СЕРВЕРНЫХ МОДАХ...")
+	for i := range config.List.Server {
+		if err := config.List.Server[i].initMissingFields(); err != nil {
+			fmt.Fprintf(os.Stderr, "Ошибка: %v\n", err)
+			os.Exit(1)
+		}
 	}
+	fmt.Println("ИНФОРМАЦИЯ О СЕРВЕРНЫХ МОДАХ ПОЛУЧЕНА")
+
+	fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ ОБ ОБЯЗАТЕЛЬНЫХ МОДАХ...")
+	for i := range config.List.Required {
+		if err := config.List.Required[i].initMissingFields(); err != nil {
+			fmt.Fprintf(os.Stderr, "Ошибка: %v\n", err)
+			os.Exit(1)
+		}
+	}
+	fmt.Println("ИНФОРМАЦИЯ ОБ ОБЯЗАТЕЛЬНЫХ МОДАХ ПОЛУЧЕНА")
+
+	fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ О РЕКОМЕНДУЕМЫХ МОДАХ...")
+	for i := range config.List.Recommended {
+		if err := config.List.Recommended[i].initMissingFields(); err != nil {
+			fmt.Fprintf(os.Stderr, "Ошибка: %v\n", err)
+			os.Exit(1)
+		}
+	}
+	fmt.Println("ИНФОРМАЦИЯ О РЕКОМЕНДУЕМЫХ МОДАХ ПОЛУЧЕНА")
+
+	fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ ОБ ОПЦИОНАЛЬНЫХ МОДАХ...")
+	for i := range config.List.Optional {
+		if err := config.List.Optional[i].initMissingFields(); err != nil {
+			fmt.Fprintf(os.Stderr, "Ошибка: %v\n", err)
+			os.Exit(1)
+		}
+	}
+	fmt.Println("ИНФОРМАЦИЯ ОБ ОПЦИОНАЛЬНЫХ МОДАХ ПОЛУЧЕНА")
 }
