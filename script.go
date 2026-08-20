@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 	"os"
+	"path/filepath"
 	"slices"
 	"sync"
 
@@ -224,6 +225,20 @@ func getModrinthVersions(name string) ([]ModrinthVersions, error) {
 //
 
 func main() {
+	// Создание директорий
+
+	if err := os.MkdirAll(BUILD_DIR, 0755); err != nil {
+		fmt.Fprintf(os.Stderr, "Ошибка: Не удалось создать директорию сборки по пути %q\n", BUILD_DIR)
+		os.Exit(1)
+	}
+
+	if err := os.MkdirAll(TEMP_DIR, 0755); err != nil {
+		fmt.Fprintf(os.Stderr, "Ошибка: Не удалось создать директорию временных файлов по пути %q\n", TEMP_DIR)
+		os.Exit(1)
+	}
+
+	// Инициализация конфига
+
 	cfg, err := loadConfig()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Ошибка загрузки конфига: %v\n", err)
@@ -233,6 +248,8 @@ func main() {
 	configMu.Lock()
 	config = cfg
 	configMu.Unlock()
+
+	// Инициализация модов
 
 	fmt.Println("ПОЛУЧЕНИЕ ИНФОРМАЦИИ О СЕРВЕРНЫХ МОДАХ...")
 	for i := range config.List.Server {
@@ -269,4 +286,19 @@ func main() {
 		}
 	}
 	fmt.Println("ИНФОРМАЦИЯ ОБ ОПЦИОНАЛЬНЫХ МОДАХ ПОЛУЧЕНА")
+
+	// Очистка временной директории
+
+	entries, err := os.ReadDir(TEMP_DIR)
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Ошибка: Не удалось очистить директорию временных файлов")
+		os.Exit(1)
+	}
+	for _, entry := range entries {
+		path := filepath.Join(TEMP_DIR, entry.Name())
+		if err := os.RemoveAll(path); err != nil {
+			fmt.Fprintf(os.Stderr, "Ошибка: Не удалось очистить директорию временных файлов")
+			os.Exit(1)
+		}
+	}
 }
