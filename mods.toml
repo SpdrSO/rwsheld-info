@@ -2,6 +2,18 @@
 version = "26.2"
 loader = "fabric"
 
+[strings]
+server_mods_header = "### Серверные моды"
+server_mods_description = "Установка этих модов на клиент **НЕ ТРЕБУЕТСЯ**, но они работают на сервере."
+server_loader_mods_header = "#### Fabric-моды"
+server_datapacks_header = "#### Дата-паки"
+required_mods_header = "### Обязательные моды"
+required_mods_description = "Эти моды **ОБЯЗАТЕЛЬНЫ** к установке на клиент для стабильной игры на сервере."
+recommended_mods_header = "### Рекомендуемые моды"
+recommended_mods_description = "Эти клиентские моды не обязательны, чтобы зайти на сервер, но улучшают игровой опыт. Вы можете пополнить этот список удобными вам клиентскими модами или исключить ненужные для вашей сборки."
+optional_mods_header = "### Опциональные моды"
+optional_mods_description = "Это клиентсие моды ситуативны, но поддерживаются сервером."
+
 # СЕРВЕРНЫЕ МОДЫ
 
 [[list.server]]
