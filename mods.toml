@@ -186,6 +186,14 @@ source = "modrinth"
 version = "0.7.6+26.2"
 type = "dependency"
 
+# ДАТА-ПАКИ
+[[list.server]]
+name = "minecart_improvements"
+pretty_name = "Minecart Improvements"
+type = "datapack"
+is_download_required = false
+description = "официальный датапак для улучшения вагонеток (у нас максимум их скорости поднят в 4 раза)"
+
 # ОБЯЗАТЕЛЬНЫЕ МОДЫ
 
 [[list.required]]

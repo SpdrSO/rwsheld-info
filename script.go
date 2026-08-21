@@ -7,6 +7,7 @@ import (
 	"os"
 	"path/filepath"
 	"slices"
+	"strings"
 	"sync"
 
 	"github.com/BurntSushi/toml"
@@ -72,13 +73,14 @@ func loadConfig() (*Config, error) {
 }
 
 type Mod struct {
-	Name         string `toml:"name"`
-	PrettyName   string `toml:"pretty_name"`
-	Source       string `toml:"source"`
-	Version      string `toml:"version"`
-	DownloadLink string `toml:"download_link"`
-	ModType      string `toml:"type"`
-	Description  string `toml:"description"`
+	Name               string `toml:"name"`
+	PrettyName         string `toml:"pretty_name"`
+	Source             string `toml:"source"`
+	Version            string `toml:"version"`
+	DownloadLink       string `toml:"download_link"`
+	IsDownloadRequired *bool  `toml:"is_download_required"`
+	ModType            string `toml:"type"`
+	Description        string `toml:"description"`
 }
 
 func (m *Mod) initMissingFields() error {
@@ -86,7 +88,7 @@ func (m *Mod) initMissingFields() error {
 		return fmt.Errorf("Для мода не указано обязательное поле \"name\"")
 	}
 
-	if m.ModType != "general" && m.ModType != "optimization" && m.ModType != "dependency" {
+	if m.ModType != "general" && m.ModType != "optimization" && m.ModType != "dependency" && m.ModType != "datapack" {
 		return fmt.Errorf("Неизвестный тип мода: %q", m.ModType)
 	}
 
@@ -102,7 +104,12 @@ func (m *Mod) initMissingFields() error {
 		})
 	}
 
-	if m.DownloadLink == "" {
+	if m.IsDownloadRequired == nil {
+		defaultValue := true
+		m.IsDownloadRequired = &defaultValue
+	}
+
+	if *m.IsDownloadRequired && m.DownloadLink == "" {
 		if m.Source == "" || m.Version == "" {
 			return fmt.Errorf("У мода %q отсутствует поле \"download_link\" или поля \"source\" + \"version\"", m.Name)
 		}
@@ -299,6 +306,10 @@ func main() {
 	}
 	fmt.Println("ИНФОРМАЦИЯ ОБ ОПЦИОНАЛЬНЫХ МОДАХ ПОЛУЧЕНА")
 
+	// Генерация списка для info
+
+	genInfoModList("")
+
 	// Очистка временной директории
 
 	entries, err := os.ReadDir(TEMP_DIR)
@@ -313,4 +324,31 @@ func main() {
 			os.Exit(1)
 		}
 	}
+}
+
+func genInfoModList(path string) {
+	var text strings.Builder
+
+	configMu.Lock()
+
+	fmt.Fprintf(&text, "%s\n", config.Strings.ServerModsHeader)
+	fmt.Fprintf(&text, "%s\n", config.Strings.ServerModsDescription)
+	text.WriteString("\n")
+
+	fmt.Fprintf(&text, "%s\n", config.Strings.ServerLoaderModsHeader)
+	for _, mod := range config.List.Server {
+		if mod.ModType == "general" {
+			fmt.Fprintf(&text, "* **%s** - %s\n", mod.PrettyName, mod.Description)
+		}
+	}
+	text.WriteString("\n")
+
+	fmt.Fprintf(&text, "%s\n", config.Strings.ServerDatapacksHeader)
+	for _, mod := range config.List.Server {
+		if mod.ModType == "datapack" {
+			fmt.Fprintf(&text, "* **%s** - %s\n", mod.PrettyName, mod.Description)
+		}
+	}
+
+	fmt.Println(text.String())
 }
