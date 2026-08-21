@@ -43,16 +43,18 @@ type Config struct {
 		Loader  string `toml:"loader"`
 	} `toml:"meta"`
 	Strings struct {
-		ServerModsHeader           string `toml:"server_mods_header"`
-		ServerModsDescription      string `toml:"server_mods_description"`
-		ServerLoaderModsHeader     string `toml:"server_loader_mods_header"`
-		ServerDatapacksHeader      string `toml:"server_datapacks_header"`
-		RequiredModsHeader         string `toml:"required_mods_header"`
-		RequiredModsDescription    string `toml:"required_mods_description"`
-		RecommendedModsHeader      string `toml:"recommended_mods_header"`
-		RecommendedModsDescription string `toml:"recommended_mods_description"`
-		OptionalModsHeader         string `toml:"optional_mods_header"`
-		OptionalModsDescription    string `toml:"optional_mods_description"`
+		ServerModsHeader            string `toml:"server_mods_header"`
+		ServerModsDescription       string `toml:"server_mods_description"`
+		ServerLoaderModsHeader      string `toml:"server_loader_mods_header"`
+		ServerDatapacksHeader       string `toml:"server_datapacks_header"`
+		RequiredModsHeader          string `toml:"required_mods_header"`
+		RequiredModsDescription     string `toml:"required_mods_description"`
+		RecommendedModsHeader       string `toml:"recommended_mods_header"`
+		RecommendedModsDescription  string `toml:"recommended_mods_description"`
+		OptionalModsHeader          string `toml:"optional_mods_header"`
+		OptionalModsDescription     string `toml:"optional_mods_description"`
+		OptimizationModsDescription string `toml:"optimization_mods_description"`
+		DependencyModsDescription   string `toml:"dependency_mods_description"`
 	} `toml:"strings"`
 	List struct {
 		Server      []Mod `toml:"server"`
@@ -341,6 +343,20 @@ func genInfoModList(path string) {
 			fmt.Fprintf(&text, "* **%s** - %s\n", mod.PrettyName, mod.Description)
 		}
 	}
+	var tempList []string
+	for _, mod := range config.List.Server {
+		if mod.ModType == "optimization" {
+			tempList = append(tempList, "**"+mod.PrettyName+"**")
+		}
+	}
+	fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.OptimizationModsDescription)
+	tempList = nil
+	for _, mod := range config.List.Server {
+		if mod.ModType == "dependency" {
+			tempList = append(tempList, "**"+mod.PrettyName+"**")
+		}
+	}
+	fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.DependencyModsDescription)
 	text.WriteString("\n")
 
 	fmt.Fprintf(&text, "%s\n", config.Strings.ServerDatapacksHeader)
