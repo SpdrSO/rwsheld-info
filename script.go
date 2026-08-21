@@ -21,9 +21,10 @@ import (
 //
 
 const (
-	BUILD_DIR   = "build"
-	TEMP_DIR    = "build/temp"
-	CONFIG_PATH = "mods.toml"
+	BUILD_DIR          = "build"
+	TEMP_DIR           = "build/temp"
+	CONFIG_PATH        = "mods.toml"
+	INFO_MOD_LIST_PATH = BUILD_DIR + "/info_mod_list.md"
 )
 
 var (
@@ -310,7 +311,11 @@ func main() {
 
 	// Генерация списка для info
 
-	genInfoModList("")
+	fmt.Println("СОЗДАНИЕ ФАЙЛА С МОДАМИ ДЛЯ ДОКУМЕНТАЦИИ...")
+	if err := genInfoModList(); err != nil {
+		fmt.Fprintf(os.Stderr, "Ошибка: %v", err)
+	}
+	fmt.Printf("ФАЙЛ СОЗДАН ПО ПУТИ %q\n", INFO_MOD_LIST_PATH)
 
 	// Очистка временной директории
 
@@ -328,43 +333,241 @@ func main() {
 	}
 }
 
-func genInfoModList(path string) {
+func genInfoModList() error {
 	var text strings.Builder
 
-	configMu.Lock()
+	configMu.RLock()
+	defer configMu.RUnlock()
 
-	fmt.Fprintf(&text, "%s\n", config.Strings.ServerModsHeader)
-	fmt.Fprintf(&text, "%s\n", config.Strings.ServerModsDescription)
-	text.WriteString("\n")
+	// Серверные моды
+	if len(config.List.Server) > 0 {
+		fmt.Fprintf(&text, "%s\n", config.Strings.ServerModsHeader)
+		fmt.Fprintf(&text, "%s\n", config.Strings.ServerModsDescription)
+		text.WriteString("\n")
 
-	fmt.Fprintf(&text, "%s\n", config.Strings.ServerLoaderModsHeader)
-	for _, mod := range config.List.Server {
-		if mod.ModType == "general" {
-			fmt.Fprintf(&text, "* **%s** - %s\n", mod.PrettyName, mod.Description)
+		hasGeneral := false
+		hasOptimization := false
+		hasDependency := false
+		hasDatapack := false
+		for _, mod := range config.List.Server {
+			switch mod.ModType {
+			case "general":
+				hasGeneral = true
+			case "optimization":
+				hasOptimization = true
+			case "dependency":
+				hasDependency = true
+			case "datapack":
+				hasDatapack = true
+			}
+		}
+
+		// Fabric-моды
+		if hasGeneral {
+			fmt.Fprintf(&text, "%s\n", config.Strings.ServerLoaderModsHeader)
+			for _, mod := range config.List.Server {
+				if mod.ModType == "general" {
+					fmt.Fprintf(&text, "* **%s** - %s\n", mod.PrettyName, mod.Description)
+				}
+			}
+		}
+
+		// Оптимизация
+		if hasOptimization {
+			var tempList []string
+			for _, mod := range config.List.Server {
+				if mod.ModType == "optimization" {
+					tempList = append(tempList, "**"+mod.PrettyName+"**")
+				}
+			}
+			fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.OptimizationModsDescription)
+		}
+
+		// Зависимости
+		if hasDependency {
+			var tempList []string
+			for _, mod := range config.List.Server {
+				if mod.ModType == "dependency" {
+					tempList = append(tempList, "**"+mod.PrettyName+"**")
+				}
+			}
+			fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.DependencyModsDescription)
+		}
+
+		// Дата-паки
+		if hasDatapack {
+			text.WriteString("\n")
+			fmt.Fprintf(&text, "%s\n", config.Strings.ServerDatapacksHeader)
+			for _, mod := range config.List.Server {
+				if mod.ModType == "datapack" {
+					fmt.Fprintf(&text, "* **%s** - %s\n", mod.PrettyName, mod.Description)
+				}
+			}
+		}
+
+		text.WriteString("\n")
+	}
+
+	// Обязательные моды
+	if len(config.List.Required) > 0 {
+		fmt.Fprintf(&text, "%s\n", config.Strings.RequiredModsHeader)
+		fmt.Fprintf(&text, "%s\n", config.Strings.RequiredModsDescription)
+
+		hasGeneral := false
+		hasOptimization := false
+		hasDependency := false
+		for _, mod := range config.List.Required {
+			switch mod.ModType {
+			case "general":
+				hasGeneral = true
+			case "optimization":
+				hasOptimization = true
+			case "dependency":
+				hasDependency = true
+			}
+		}
+
+		// Основные моды
+		if hasGeneral {
+			for _, mod := range config.List.Required {
+				if mod.ModType == "general" {
+					fmt.Fprintf(&text, "* **%s** - %s\n", mod.PrettyName, mod.Description)
+				}
+			}
+		}
+
+		// Оптимизация
+		if hasOptimization {
+			var tempList []string
+			for _, mod := range config.List.Required {
+				if mod.ModType == "optimization" {
+					tempList = append(tempList, "**"+mod.PrettyName+"**")
+				}
+			}
+			fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.OptimizationModsDescription)
+		}
+
+		// Зависимости
+		if hasDependency {
+			var tempList []string
+			for _, mod := range config.List.Required {
+				if mod.ModType == "dependency" {
+					tempList = append(tempList, "**"+mod.PrettyName+"**")
+				}
+			}
+			fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.DependencyModsDescription)
+		}
+
+		text.WriteString("\n")
+	}
+
+	// Рекомендуемые моды
+	if len(config.List.Recommended) > 0 {
+		fmt.Fprintf(&text, "%s\n", config.Strings.RecommendedModsHeader)
+		fmt.Fprintf(&text, "%s\n", config.Strings.RecommendedModsDescription)
+
+		hasGeneral := false
+		hasOptimization := false
+		hasDependency := false
+		for _, mod := range config.List.Recommended {
+			switch mod.ModType {
+			case "general":
+				hasGeneral = true
+			case "optimization":
+				hasOptimization = true
+			case "dependency":
+				hasDependency = true
+			}
+		}
+
+		// Основные моды
+		if hasGeneral {
+			for _, mod := range config.List.Recommended {
+				if mod.ModType == "general" {
+					fmt.Fprintf(&text, "* **%s** - %s\n", mod.PrettyName, mod.Description)
+				}
+			}
+		}
+
+		// Оптимизация
+		if hasOptimization {
+			var tempList []string
+			for _, mod := range config.List.Recommended {
+				if mod.ModType == "optimization" {
+					tempList = append(tempList, "**"+mod.PrettyName+"**")
+				}
+			}
+			fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.OptimizationModsDescription)
+		}
+
+		// Зависимости
+		if hasDependency {
+			var tempList []string
+			for _, mod := range config.List.Recommended {
+				if mod.ModType == "dependency" {
+					tempList = append(tempList, "**"+mod.PrettyName+"**")
+				}
+			}
+			fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.DependencyModsDescription)
+		}
+
+		text.WriteString("\n")
+	}
+
+	// Опциональные моды
+	if len(config.List.Optional) > 0 {
+		fmt.Fprintf(&text, "%s\n", config.Strings.OptionalModsHeader)
+		fmt.Fprintf(&text, "%s\n", config.Strings.OptionalModsDescription)
+
+		hasGeneral := false
+		hasOptimization := false
+		hasDependency := false
+		for _, mod := range config.List.Optional {
+			switch mod.ModType {
+			case "general":
+				hasGeneral = true
+			case "optimization":
+				hasOptimization = true
+			case "dependency":
+				hasDependency = true
+			}
+		}
+
+		// Основные моды
+		if hasGeneral {
+			for _, mod := range config.List.Optional {
+				if mod.ModType == "general" {
+					fmt.Fprintf(&text, "* **%s** - %s\n", mod.PrettyName, mod.Description)
+				}
+			}
+		}
+
+		// Оптимизация
+		if hasOptimization {
+			var tempList []string
+			for _, mod := range config.List.Optional {
+				if mod.ModType == "optimization" {
+					tempList = append(tempList, "**"+mod.PrettyName+"**")
+				}
+			}
+			fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.OptimizationModsDescription)
+		}
+
+		// Зависимости
+		if hasDependency {
+			var tempList []string
+			for _, mod := range config.List.Optional {
+				if mod.ModType == "dependency" {
+					tempList = append(tempList, "**"+mod.PrettyName+"**")
+				}
+			}
+			fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.DependencyModsDescription)
 		}
 	}
-	var tempList []string
-	for _, mod := range config.List.Server {
-		if mod.ModType == "optimization" {
-			tempList = append(tempList, "**"+mod.PrettyName+"**")
-		}
-	}
-	fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.OptimizationModsDescription)
-	tempList = nil
-	for _, mod := range config.List.Server {
-		if mod.ModType == "dependency" {
-			tempList = append(tempList, "**"+mod.PrettyName+"**")
-		}
-	}
-	fmt.Fprintf(&text, "* %s - %s\n", strings.Join(tempList, ", "), config.Strings.DependencyModsDescription)
-	text.WriteString("\n")
 
-	fmt.Fprintf(&text, "%s\n", config.Strings.ServerDatapacksHeader)
-	for _, mod := range config.List.Server {
-		if mod.ModType == "datapack" {
-			fmt.Fprintf(&text, "* **%s** - %s\n", mod.PrettyName, mod.Description)
-		}
+	if err := os.WriteFile(INFO_MOD_LIST_PATH, []byte(text.String()), 0644); err != nil {
+		return fmt.Errorf("Не удалось создать файл по пути %q", INFO_MOD_LIST_PATH)
 	}
 
-	fmt.Println(text.String())
+	return nil
 }
